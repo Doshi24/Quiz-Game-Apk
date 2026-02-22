@@ -12,7 +12,7 @@ export const addPlayersToQueues = (level,player)=>{
 }
 
 export const RemovePlayersFromQueues = (level)=>{
-    watingplayes[level].shift()
+     return watingplayes[level].shift()
 }
 
 

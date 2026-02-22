@@ -22,7 +22,7 @@ export const CreateGameSession = (gameId,gameData)=>{
 
 
 export const StoreGameSession = (gameId)=>{
-    activeGames.get(gameId)
+    return activeGames.get(gameId)
 }
 
 

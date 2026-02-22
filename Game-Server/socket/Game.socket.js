@@ -6,6 +6,14 @@ export const GameScoket = (io)=>{
         console.log("user Connected : ", socket.id )
         
         socket.on("Join_Game",({gameid, playerid})=>{
+            const game = StoreGameSession(gameid)
+
+            if(!game){
+                return socket.emit("error",{
+                    message : "Game Does not Exist"
+                })
+            }
+            
             socket.join(gameid)
             console.log(`${playerid} joined ${gameid}`)
 
@@ -23,22 +31,48 @@ export const GameScoket = (io)=>{
             if(!game){
                 return socket.emit("error", {message : "Game not Found"})
             }
-            if(!game.answer[playerid]){
-                game.answer[playerid]=[]
+            if(!game.answers[playerid]){
+                game.answers[playerid]=[]
             }
+
+            // prevent duplicate answer
             const alreadyAnswered = game.answers[playerid].some(a=> a.questionid === questionid)
+            
             if(alreadyAnswered){
                 console.log("duplicate ans ignore")
                 return
             }
-            game.answer[playerid].push({
+            // find question 
+            const question = game.questions.find(q =>q.id ==  questionid)
+
+            if(!question){
+                return socket.emit("error",{
+                    message : "Invalid Question"
+                })
+            }
+
+            //check correct ans
+            const isCorrectans = question.correctanswers === answer
+
+            if(isCorrectans){
+                game.scores[playerid] += 1
+            }
+            console.log("Scores:", game.scores);    
+
+            //store ans
+            game.answers[playerid].push({
                 questionid,
                 answer,
+                isCorrectans,
                 answerAt : Date.now()
             })
 
+            // display ans to all user real time 
             io.to(gameid).emit("answer_recived",{
-                playerid,questionid
+                playerid,
+                questionid,
+                isCorrectans,
+                score : game.scores[playerid]
             })
         })
 

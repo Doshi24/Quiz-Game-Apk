@@ -3,6 +3,7 @@ import cors from "cors"
 import http from "http"
 import { Server } from "socket.io"
 import { GameScoket } from "../Game-Server/socket/Game.socket.js"
+import { startGameSession } from "../Game-Server/services/gameSession.services.js"
 const app = express()
 app.use(cors())
 app.use(express.json())
@@ -20,6 +21,21 @@ app.get('/testapi',(req,res)=>{
 })
 
 const PORT = 3000
-server.listen(PORT,()=>{
-    console.log(`server running on port ${PORT} `)
-})
+const startServer = async () => {
+
+    const game = await startGameSession(
+        [
+            { playerId: "A" },
+            { playerId: "B" }
+        ],
+        "easy"
+    )
+
+    console.log("GAME CREATED:", game.gameid)
+
+    server.listen(PORT, () => {
+        console.log(`server running on port ${PORT}`)
+    })
+}
+
+startServer()

@@ -7,12 +7,12 @@ socket.on("connect",()=>{
     console.log("player  B joined ")
 
     socket.emit("Join_Game",{
-        gameid : "game123",
+        gameid : "game1771768867412",
         playerid :"B"
     })
     setTimeout(()=>{
         socket.emit("Submit_answer",{
-            gameid : "game123",
+            gameid : "game1771768867412",
             playerid : "B",
             questionid : "1",
             answer : "OptionA"

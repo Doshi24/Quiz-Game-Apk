@@ -11,12 +11,14 @@ export const startGameSession = async(Players,level)=>{
         Players,
         questions,
         answers : {},
+        scores : {},
         start_time : Date.now(),
         status : "active"
     }
 
     Players.forEach(Player => {
-        GameData.answers[Player.PlayerId] = []
+        GameData.answers[Player.playerId] = []
+        GameData.scores[Player.playerId] = 0
     });
 
     CreateGameSession(gameid,GameData)

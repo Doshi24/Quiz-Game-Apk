@@ -1,28 +1,43 @@
-import { Socket } from "socket.io";
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:3000")
+const gameid = "game1771777325794";
 
-socket.on("connect",()=>{
-    console.log("player  B joined ")
+const socket = io("http://localhost:3000");
 
-    socket.emit("Join_Game",{
-        gameid : "game1771773104662",
-        playerid :"B"
-    })
+socket.on("connect", () => {
+    console.log("Player B joined");
 
-})
+    socket.emit("Join_Game", {
+        gameid: gameid,
+        playerid: "B"
+    });
+});
 
-socket.on("Game_Started",(data)=>{
-    console.log("Game Started")
-    console.log(data.questions)
 
-    setTimeout(()=>{
-        socket.emit("Submit_answer",{
-            gameid : "game1771773104662",
-            playerid : "B",
-            questionid : 1,
-            answer : "OptionA"
-        })
-    },3000)
-})
+// GAME START EVENT
+socket.on("Game_Started", (data) => {
+    console.log("Game Started");
+    console.log("Questions:", data.questions);
+});
+
+
+// NEW QUESTION EVENT
+socket.on("new_questions", (data) => {
+
+    console.log("Question:", data.question.question);
+
+    setTimeout(() => {
+        socket.emit("Submit_answer", {
+            gameid: gameid,
+            playerid: "B",
+            questionid: data.question.id,
+            answer: data.question.options[0]
+        });
+    }, 2000);
+});
+
+
+// SCORE UPDATE
+socket.on("score_update",(data)=>{
+    console.log("Scores:", data);
+});

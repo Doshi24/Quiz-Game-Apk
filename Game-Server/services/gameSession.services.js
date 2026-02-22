@@ -12,7 +12,9 @@ export const startGameSession = async(Players,level)=>{
         questions,
         answers : {},
         scores : {},
-        start_time : Date.now(),
+        currentQuestionIndex : -1,
+        questionTimer : null,
+        start_time : null,
         status : "wating"
     }
 

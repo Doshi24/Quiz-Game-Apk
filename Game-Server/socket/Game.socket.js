@@ -1,5 +1,6 @@
 import { Socket } from "socket.io"
 import { StoreGameSession } from "../store/memoryStore.js"
+import { startGameloop } from "../services/gameloop.services.js"
 
 export const GameScoket = (io)=>{
     io.on("connection",(socket)=>{
@@ -29,6 +30,7 @@ export const GameScoket = (io)=>{
 
                 game.status = "playing"
                 game.start_time = Date.now()
+                startGameloop(io, gameid)
 
                 io.to(gameid).emit("Game_Started",{
                     questions : game.questions
@@ -49,9 +51,23 @@ export const GameScoket = (io)=>{
                     message : "Game not Started yet"
                 })
             }
-            
+
             if(!game.answers[playerid]){
                 game.answers[playerid]=[]
+            }
+
+            const currentQuestion = game.questions[game.currentQuestionIndex]
+
+            if(currentQuestion.id != questionid){
+                return socket.emit("error",{
+                    message : "Not Current Question"
+                })
+            }
+
+            if(game.questionTimer === null){
+                return socket.emit("error",{
+                    message : "Question Time Finsh"
+                })
             }
 
             // prevent duplicate answer

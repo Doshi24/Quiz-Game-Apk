@@ -13,7 +13,7 @@ export const GameScoket = (io)=>{
                     message : "Game Does not Exist"
                 })
             }
-            
+
             socket.join(gameid)
             console.log(`${playerid} joined ${gameid}`)
 
@@ -21,6 +21,19 @@ export const GameScoket = (io)=>{
                 playerid,
                 message :"Player joined the Game"
             })
+
+            const room = io.sockets.adapter.rooms.get(gameid)
+
+            if(room && room.size === 2) {
+                console.log("both Players are joined --- starting Game Now")
+
+                game.status = "playing"
+                game.start_time = Date.now()
+
+                io.to(gameid).emit("Game_Started",{
+                    questions : game.questions
+                })
+            }
         })
 
         socket.on("Submit_answer",({gameid,playerid,questionid,answer})=>{
@@ -31,6 +44,12 @@ export const GameScoket = (io)=>{
             if(!game){
                 return socket.emit("error", {message : "Game not Found"})
             }
+            if(game.status !== "playing"){
+                return socket.emit("error",{
+                    message : "Game not Started yet"
+                })
+            }
+            
             if(!game.answers[playerid]){
                 game.answers[playerid]=[]
             }

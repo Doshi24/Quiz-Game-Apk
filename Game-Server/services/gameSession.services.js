@@ -13,7 +13,7 @@ export const startGameSession = async(Players,level)=>{
         answers : {},
         scores : {},
         start_time : Date.now(),
-        status : "active"
+        status : "wating"
     }
 
     Players.forEach(Player => {

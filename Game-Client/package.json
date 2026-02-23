@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "serve": "serve -s dist",
+    "start": "serve -s dist"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -16,6 +18,7 @@
     "@mui/material": "^7.3.8",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "serve": "^14.2.5",
     "socket.io-client": "^4.8.3"
   },
   "devDependencies": {

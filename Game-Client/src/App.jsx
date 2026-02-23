@@ -1,7 +1,7 @@
     import { useState, useEffect } from "react";
-    import Join from "./pages/Join";
-    import Quiz from "./pages/Quiz";
-    import Result from "./Pages/Result";
+    import Join from "./pages/Join.jsx";
+    import Quiz from "./pages/Quiz.jsx";
+    import Result from "./Pages/Result.jsx";
     import { socket } from "./socket/GameSocket.js";
     import { Box, Paper, Typography, Stack } from "@mui/material";
 

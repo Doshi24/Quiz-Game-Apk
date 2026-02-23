@@ -1,10 +1,27 @@
 import { Socket } from "socket.io"
-import { StoreGameSession } from "../store/memoryStore.js"
+import { CreateGameSession, StoreGameSession } from "../store/memoryStore.js"
+import { startGameSession } from "../services/gameSession.services.js"
 import { startGameloop } from "../services/gameloop.services.js"
 
 export const GameScoket = (io)=>{
     io.on("connection",(socket)=>{
         console.log("user Connected : ", socket.id )
+
+        socket.on("create_game", async ({ playerid, level }) => {
+
+        const game = await startGameSession(
+            [{ playerId: playerid }],
+            level
+        );
+
+        socket.join(game.gameid);
+
+        socket.emit("game_created", {
+            gameid: game.gameid
+        });
+
+            console.log("GAME CREATED:", game.gameid);
+        });
         
         socket.on("Join_Game",({gameid, playerid})=>{
             const game = StoreGameSession(gameid)
@@ -14,9 +31,11 @@ export const GameScoket = (io)=>{
                     message : "Game Does not Exist"
                 })
             }
-
             socket.join(gameid)
             console.log(`${playerid} joined ${gameid}`)
+            
+            game.scores[playerid] = 0;
+            game.answers[playerid] = [];
 
             io.to(gameid).emit("player_joined",{
                 playerid,
@@ -24,6 +43,9 @@ export const GameScoket = (io)=>{
             })
 
             const room = io.sockets.adapter.rooms.get(gameid)
+            console.log("ROOM DATA:", room)
+            console.log("ROOM SIZE:", room?.size)
+            console.log("ROOM SOCKETS:", [...(room || [])])
 
             if(room && room.size === 2) {
                 console.log("both Players are joined --- starting Game Now")

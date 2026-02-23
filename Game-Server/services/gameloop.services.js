@@ -43,12 +43,16 @@ const finsihGame = (io,gameid) =>{
     const players = Object.keys(game.scores)
 
     let winner = "Draw"
+    let maxscore = -1
 
-    if(game.scores[players[0]]> game.scores[players[1]]){
-        winner = players[0]
-    }else if (game.scores[players[1]] > game.scores[players[0]]){
-        winner = players[1]
-    }
+    players.forEach(p =>{
+        if(game.scores[p]> maxscore){
+            maxscore = game.scores[p]
+            winner = p
+        }else if (game.scores[p] === maxscore){
+            winner = "Draw"
+        }
+    })
 
     io.to(gameid).emit("Game_finished",{
         scores : game.scores,

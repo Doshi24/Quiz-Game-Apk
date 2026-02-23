@@ -7,6 +7,7 @@ export const GenerateQuiz =  async (level)=>{
     }
 
     const diffucilty = diffuciltyMap[level]
+    console.log("LEVEL RECEIVED:", level)
 
     const url= `https://opentdb.com/api.php?amount=10&difficulty=${diffucilty}&type=multiple`
 
